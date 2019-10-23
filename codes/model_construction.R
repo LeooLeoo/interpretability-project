@@ -5,14 +5,34 @@ library(e1071)
 library(Matrix)
 library(xgboost)
 library("data.table")
+library(adabag)
 
 #load the data
 data <-read.csv(file="/Users/leeo/Desktop/KI2/2.Current\ research\ trend/5.Block\ 2/6.github/interpretability-project/processed_data/proceseed_data.csv",sep = ",") 
 data <- data[,-1]
 data$SepsisLabel <- as.factor(data$SepsisLabel)
 
-######for the rest of the code, we will construct XGBoost, randomforest and SVM
+######for the rest of the code, we will construct AdaBoost, XGBoost, randomforest and SVM
 ######and for part B, we will have an external validation for the best model
+
+#####
+# Adaboost classifier
+set.seed(5)
+n = nrow(data)
+train.index = sample(n,floor(0.75*n))
+train.data = (data[train.index,])
+test.data = (data[-train.index,])
+
+ada <- adabag::boosting(SepsisLabel~., data = train.data, mfinal = 20)
+prediction_ada <- adabag::predict.boosting(ada, test.data)
+res_ada<-prediction_ada$confusion
+res_ada
+accuracy <- (res_ada[1,1] + res_ada[2,2])/sum(res_ada)
+precision <- res_ada[1,1]/(res_ada[1,1]+res_ada[2,1])
+recall <- res_ada[1,1]/(res_ada[1,1]+res_ada[1,2])
+accuracy
+precision
+recall
 
 
 ###XGBoost
@@ -77,7 +97,7 @@ recall <- (table[2,2])/(table[2,2]+table[1,2])
 print(paste("Final Accuracy of XGBoost =",sprintf("%1.2f%%", 100*accuracy)))
 print(paste("Final Precision of XGBoost =",sprintf("%1.2f%%", 100*precision)))
 print(paste("Final Recall of XGBoost =",sprintf("%1.2f%%", 100*recall)))
-
+table
 
 
 
