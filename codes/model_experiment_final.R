@@ -132,3 +132,36 @@ precisionaverage
 recallaverage
 fscoreaverage
 print(fscore)
+
+
+
+###### export the data #########
+set.seed(3)
+datarandom<-data[sample(nrow(data)),] #shuffle the data
+folds <- cut(seq(1,nrow(data)),breaks=10,labels=FALSE) 
+i = 9
+
+testIndexes <- which(folds==i,arr.ind=TRUE) #we holdout one fold for testing
+trainIndexes <- which(folds!=i,arr.ind=TRUE) #we train on the other folds
+data_all.test <- datarandom[testIndexes, ]
+data_all.train <- datarandom[trainIndexes, ]
+#export the data
+write.csv(data_all.train,file = "~/Desktop/KI2/2.Current research trend/5.Block 2-project/6.github/interpretability-LIME/interpretability-project/processed_data/final_model_train.csv")
+write.csv(data_all.test,file = "~/Desktop/KI2/2.Current research trend/5.Block 2-project/6.github/interpretability-LIME/interpretability-project/processed_data/final_model_test.csv")
+
+
+#### performance of the "best" model ######
+set.seed(3)
+rf.data <- randomForest(data_all.train$SepsisLabel~ ., data =
+                          data_all.train,ntree=300) #20, 50, 100, 300, 500
+prediction <- predict(rf.data, data_all.test, type="class")
+#generate the confusion matrix
+table <- table(prediction, data_all.test$SepsisLabel)
+accuracy <- (table[1,1]+table[2,2])/sum(table)
+precision <- (table[2,2])/(table[2,2]+table[2,1])
+recall <- (table[2,2])/(table[2,2]+table[1,2])
+fscore <- (2*table[2,2])/(2*table[2,2]+table[2,1]+table[1,2])
+accuracy
+precision
+recall
+fscore
