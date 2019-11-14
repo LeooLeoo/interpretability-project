@@ -1,56 +1,53 @@
-data <- read.csv(file="imputed_balanced_labs.csv")
-data$X = NULL
-data$HospAdmTime = NULL
-data$ICULOS = NULL
-data$Gender <- as.factor(data$Gender)
-
 library(tree)
 library(ISLR)
 library(randomForest)
 library(e1071)
 library(caret)
 library(lime)
+library(dplyr)
+library(lattice)
+library(ggplot2)
 
+train <- read.csv(file="final_model_train.csv")
+test <- read.csv(file="final_model_test.csv")
+
+train$X = NULL
+test$X = NULL
+
+train$Gender <- as.factor(train$Gender)
+test$Gender <- as.factor(test$Gender)
+
+
+#Train model
 
 set.seed(3)
-train = sample(nrow(data), nrow(data)*2/3)
-test = -train
+rf.data <-randomForest(train$SepsisLabel~.,train,ntree=300)
 
-data_test=data[test,]
-data_train=data[train,]
+prediction_rf <- predict(rf.data, test, type = 'class')
 
-set.seed(3)
-rf.data <-randomForest(data_train$SepsisLabel~.,data_train,ntree=500)
+#Find test cases from test set.
 
-prediction_rf <- predict(rf.data, data_test, type = 'class')
+#x <- predict(rf.data, test, type = 'prob') 
+#x <- as.data.frame(x)
 
-cm <- confusionMatrix(prediction_rf, data_test$SepsisLabel, mode = "everything")
-cm
+#ns <- subset(x, x[,2] >0.8)
+#ns0 <- subset(x,x[,1]>0.8)
 
-#Define observations
+#observation1 <- sample(nrow(ns), 5, replace = FALSE)
+#observation2 <- sample(nrow(ns0), 5, replace = FALSE)
+#observation <- rbind(observation1,observation2)
 
-observation <- data[c(5,28,163,226,360,7851,10676,7881,10581,10559),]
-observation <- observation[sample(nrow(observation)),]
+observation <- test[c(672,768,1048,1079,1259,345,842,1036,1104,1171),]
 
-observation2 <- data[c(10,3688,3825,4569,28,7851,10011,9967,10027,10149),]
-observation2 <- observation2[sample(nrow(observation2)),]
-
-prediction_rf_test <- predict(rf.data, observation, type = 'class')
-prediction_rf_test2 <- predict(rf.data, observation2, type = 'class')
-
-cm <- confusionMatrix(prediction_rf_test, observation$SepsisLabel, mode = "everything")
-cm
-
-cm <- confusionMatrix(prediction_rf_test2, observation2$SepsisLabel, mode = "everything")
-cm
 
 #LIME
-expln <- lime(data_train, as_classifier(rf.data), n_bins = 4)
+
+expln <- lime(train, as_classifier(rf.data), n_bins = 4)
 
 explanation <- explain(x = observation[,names(observation)!="SepsisLabel"],
                        expln,
                        n_labels = 1,
-                       n_features = 4,
+                       n_features = 5,
                        feature_select = "highest_weights"
                        
 )
