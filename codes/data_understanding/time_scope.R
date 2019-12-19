@@ -59,7 +59,8 @@ for (i in 1:length(data)){
 #combine the data
 septic_obs_data <- ldply(data, function(x) rbind(x))
 #export the septic data
-write.csv(septic_obs_data, file= "../../data/exp_data/time_scope_exp/septic_obs_6h.csv")
+write.csv(septic_obs_data, file= "../../data/exp_data/time_scope_exp/septic_obs_6h.csv",
+          row.names= FALSE)
 #replace the missing again
 for(x in 1:ncol(septic_obs_data)){
   septic_obs_data[is.na(septic_obs_data[,x]), x] <- median(septic_obs_data[,x], na.rm = TRUE)
@@ -67,7 +68,8 @@ for(x in 1:ncol(septic_obs_data)){
 #relabel the class
 septic_obs_data$SepsisLabel <- 1
 #export the septic data again
-write.csv(septic_obs_data, file= "../../data/exp_data/time_scope_exp/septic_obs_6h_complete.csv")
+write.csv(septic_obs_data, file= "../../data/exp_data/time_scope_exp/septic_obs_6h_complete.csv",
+          row.names= FALSE)
 #check the missing values
 vis_miss(septic_obs_data,warn_large_data=F)
 
@@ -107,19 +109,22 @@ set.seed(3)
 train = sample(nrow(nonSeptic_obs_data), 8304)
 nonSeptic_obs_data <-nonSeptic_obs_data[train,]
 #export the septic data
-write.csv(nonSeptic_obs_data, file= "../../data/exp_data/time_scope_exp/nonSeptic_obs_6h.csv")
+write.csv(nonSeptic_obs_data, file= "../../data/exp_data/time_scope_exp/nonSeptic_obs_6h.csv",
+          row.names= FALSE)
 #replace the missing again
 for(x in 1:ncol(nonSeptic_obs_data)){
   nonSeptic_obs_data[is.na(nonSeptic_obs_data[,x]), x] <- median(nonSeptic_obs_data[,x], na.rm = TRUE)
 }
 #export the septic data again
-write.csv(nonSeptic_obs_data, file= "../../data/exp_data/time_scope_exp/nonSeptic_obs_6h_complete.csv")
+write.csv(nonSeptic_obs_data, file= "../../data/exp_data/time_scope_exp/nonSeptic_obs_6h_complete.csv",
+          row.names= FALSE)
 
 #combine the positive and negative data
 binded_balanced_data <- rbind(septic_obs_data,nonSeptic_obs_data)
 binded_balanced_data$SepsisLabel<- as.factor(binded_balanced_data$SepsisLabel)
 #export the balanced complete data again
-write.csv(binded_balanced_data, file= "../../data/exp_data/time_scope_exp/balanced_obs_6h_complete.csv")
+write.csv(binded_balanced_data, file= "../../data/exp_data/time_scope_exp/balanced_obs_6h_complete.csv",
+          row.names= FALSE)
 
 
 
