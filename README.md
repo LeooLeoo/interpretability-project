@@ -11,6 +11,6 @@ This is a project of current research and trend of health informatics from Karol
 
 
 ### The work consists of 3 stages:
-- [ ] machine learning model construction
-- [ ] LIME codes implementation
-- [ ] Interpretability evaluation
+- [x] machine learning model construction
+- [x] LIME codes implementation
+- [x] Interpretability evaluation
