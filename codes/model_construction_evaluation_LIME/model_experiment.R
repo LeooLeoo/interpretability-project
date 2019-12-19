@@ -1,16 +1,16 @@
-##load the data
-data <-read.csv("~/Desktop/KI2/2.Current research trend/5.Block 2-project/6.github/interpretability-LIME/interpretability-project/processed_data/imputed_balanced_labs.csv")[,c(2:14,17)]
-data$Gender<-as.factor(data$Gender)
+library(randomForest)
+library(caret)
+library(e1071)
+library(adabag)
 
+##load the data
+data <-read.csv("../../data/processed_data/mice_undersample.csv")
+data$Gender<-as.factor(data$Gender)
+data$SepsisLabel<-as.factor(data$SepsisLabel)
 
 
 
 ######## 10-fold Random forest ###########
-library(randomForest)
-library(caret)
-
-
-#10-fold cross validation for rf
 set.seed(3)
 datarandom<-data[sample(nrow(data)),] #shuffle the data
 folds <- cut(seq(1,nrow(data)),breaks=10,labels=FALSE) 
@@ -54,9 +54,6 @@ print(fscore)
 
 
 ######## 10-fold Support Vector Machine ###########
-library(e1071)
-
-# store our metrics for each model
 accuracy <- vector()
 precision <- vector()
 recall <- vector()
@@ -96,9 +93,6 @@ print(fscore)
 
 
 ######## 10-fold AdaBoost ###########
-library(adabag)
-
-# store our metrics for each model
 accuracy <- vector()
 precision <- vector()
 recall <- vector()
@@ -137,7 +131,7 @@ print(fscore)
 
 ###### export the data #########
 set.seed(3)
-datarandom<-data[sample(nrow(data)),] #shuffle the data
+datarandom<-data[sample(nrow(data)),] 
 folds <- cut(seq(1,nrow(data)),breaks=10,labels=FALSE) 
 i = 9
 
@@ -146,9 +140,10 @@ trainIndexes <- which(folds!=i,arr.ind=TRUE) #we train on the other folds
 data_all.test <- datarandom[testIndexes, ]
 data_all.train <- datarandom[trainIndexes, ]
 #export the data
-write.csv(data_all.train,file = "~/Desktop/KI2/2.Current research trend/5.Block 2-project/6.github/interpretability-LIME/interpretability-project/processed_data/final_model_train.csv")
-write.csv(data_all.test,file = "~/Desktop/KI2/2.Current research trend/5.Block 2-project/6.github/interpretability-LIME/interpretability-project/processed_data/final_model_test.csv")
-
+write.csv(data_all.train,file = "../../data/processed_data/mice_undersample_train.csv",
+          row.names= FALSE)
+write.csv(data_all.test,file = "../../data/processed_data/mice_undersample_test.csv",
+          row.names= FALSE)
 
 #### performance of the "best" model ######
 set.seed(3)
