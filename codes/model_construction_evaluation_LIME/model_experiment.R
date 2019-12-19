@@ -1,3 +1,9 @@
+# This code is to experiment all kinds of classifiers
+# to find out the optimal classifier for this dataset,
+# by comparing the metrics of 10-fold cross validation.
+# Classifiers used include random forest, support vector machine and adaboost
+# The output is the training and testing data for deployed model.
+
 library(randomForest)
 library(caret)
 library(e1071)
