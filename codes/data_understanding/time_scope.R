@@ -1,14 +1,25 @@
+# This code is to explore the data according to a 6-hour time scope
+# The logic is to first find the index of septic patients, and put them into a list.
+# Then find the index of the label=1 first appear, and then export the observations before it
+# Same with the non septic patients. Except that, random select same amount of patients.
+# Then combine this two as the balanced time scope dataset for random forest classifier
+# The accuracy is 99.55%, which is too high
 
 ###### data loading ########
-files <- list.files("~/Desktop/KI2/2.Current research trend/5.Block 2-project/6.github/interpretability-LIME/interpretability-project/original dataset/training",full.names=T, pattern=".psv", ignore.case=T)
 library("data.table")
+files <- list.files("../../data/original_dataset/training_setA/",
+                    full.names=T, pattern=".psv", ignore.case=T)
 ff <- function(input){
   data <- fread(input) 
 }
 #load the data
 a <- lapply(files, ff)
 
+
+
 ######## septic data ########
+library(plyr) 
+library(naniar)
 # Find the septic patients' index
 findSepticPatient <- function(){
   septic <- c()
@@ -46,10 +57,9 @@ for (i in 1:length(data)){
 }
 
 #combine the data
-library(plyr) 
 septic_obs_data <- ldply(data, function(x) rbind(x))
 #export the septic data
-write.csv(septic_obs_data, file= "./septic_obs_6h.csv")
+write.csv(septic_obs_data, file= "../../data/exp_data/time_scope_exp/septic_obs_6h.csv")
 #replace the missing again
 for(x in 1:ncol(septic_obs_data)){
   septic_obs_data[is.na(septic_obs_data[,x]), x] <- median(septic_obs_data[,x], na.rm = TRUE)
@@ -57,9 +67,8 @@ for(x in 1:ncol(septic_obs_data)){
 #relabel the class
 septic_obs_data$SepsisLabel <- 1
 #export the septic data again
-write.csv(septic_obs_data, file= "./septic_obs_6h_complete.csv")
-
-library(naniar)
+write.csv(septic_obs_data, file= "../../data/exp_data/time_scope_exp/septic_obs_6h_complete.csv")
+#check the missing values
 vis_miss(septic_obs_data,warn_large_data=F)
 
 
@@ -98,21 +107,19 @@ set.seed(3)
 train = sample(nrow(nonSeptic_obs_data), 8304)
 nonSeptic_obs_data <-nonSeptic_obs_data[train,]
 #export the septic data
-write.csv(nonSeptic_obs_data, file= "./nonSeptic_obs_6h.csv")
+write.csv(nonSeptic_obs_data, file= "../../data/exp_data/time_scope_exp/nonSeptic_obs_6h.csv")
 #replace the missing again
 for(x in 1:ncol(nonSeptic_obs_data)){
   nonSeptic_obs_data[is.na(nonSeptic_obs_data[,x]), x] <- median(nonSeptic_obs_data[,x], na.rm = TRUE)
 }
 #export the septic data again
-write.csv(nonSeptic_obs_data, file= "./nonSeptic_obs_6h_complete.csv")
-
-
+write.csv(nonSeptic_obs_data, file= "../../data/exp_data/time_scope_exp/nonSeptic_obs_6h_complete.csv")
 
 #combine the positive and negative data
 binded_balanced_data <- rbind(septic_obs_data,nonSeptic_obs_data)
 binded_balanced_data$SepsisLabel<- as.factor(binded_balanced_data$SepsisLabel)
 #export the balanced complete data again
-write.csv(binded_balanced_data, file= "./balanced_obs_6h_complete.csv")
+write.csv(binded_balanced_data, file= "../../data/exp_data/time_scope_exp/balanced_obs_6h_complete.csv")
 
 
 

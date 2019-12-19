@@ -1,52 +1,52 @@
 #Data exploration of PhysioNet 2019
+# This code is for understanding the original dataset from Physionet 2019,
+# which consist of setA and setB. We first need to load the data according to
+# their path, and then combine all the patients into "data".
+# We then explore the relationship between SepsisLable and other variables.
+# And then we calculate the distribution of sepsis and nonsepsis patient.
+# The output is summaried in a ppt
 
-###### data loading ########
-files <- list.files("~/Desktop/KI2/2.Current research trend/5.Block 2-project/6.github/interpretability-LIME/interpretability-project/original dataset/training_setB/",full.names=T, pattern=".psv", ignore.case=T)
+###### 1. data loading ########
 library("data.table")
+library(plyr) 
+files <- list.files("../../data/original_dataset/training_setA/",
+                    full.names=T, pattern=".psv", ignore.case=T) #same with setB
+#load the data
 ff <- function(input){
   data <- fread(input) 
 }
-#load the data
 a <- lapply(files, ff)
-
 #combine the data
-library(plyr) 
 binded.data <- ldply(a, function(x) rbind(x, fill = TRUE))
 data<- binded.data
 data[is.na(data)] <- NA
 
-###### data exploration ########
+
+
+
+
+###### 2. data exploration ########
 library(tidyverse)
 library(caret)
 library(GGally)
 library(treemap)
 library(dplyr)
-
-#summary()
-
+#summary(data)
 ggplot(data, aes(SepsisLabel)) +
   geom_bar()
-
 ggplot(data, aes(ICULOS)) +
   geom_bar()
-
-
 
 ###### relationship between SepsisLable and ICULOS
 p1 <- ggplot(data, aes(x = factor(SepsisLabel), y = ICULOS)) +
   geom_point(alpha = .2)
-
 p2 <- ggplot(data, aes(x = factor(SepsisLabel), y = ICULOS)) +
   geom_jitter(alpha = .2, width = .2)
-
 p3 <- ggplot(data, aes(x = factor(SepsisLabel), y = ICULOS)) +
   geom_boxplot()
-
 p4 <- ggplot(data, aes(x = factor(SepsisLabel), y = ICULOS)) +
   geom_violin()
-
 gridExtra::grid.arrange(p1, p2, p3, p4, nrow = 2)
-
 
 #### density plot
 p1 <- ggplot(data, aes(x = ICULOS, color = factor(SepsisLabel))) +
@@ -90,10 +90,11 @@ ggplot(data, aes(x = Chloride, y = factor(SepsisLabel))) +
 
 
 
-######### data description ##########
+
+######### 3. data description ##########
 ### missing value
 library(naniar)
-vis_miss(data[,35:41],warn_large_data=F)
+vis_miss(data[,35:41],warn_large_data=F) #change the columns
 
 # data %>%
 #   select(Gender, Unit1, Unit2, SepsisLabel) %>%
@@ -101,7 +102,6 @@ vis_miss(data[,35:41],warn_large_data=F)
 #   ggplot(aes(value)) +
 #   geom_bar() +
 #   facet_wrap(~ var, scales = "free")
-
 
 
 ### how many septic patient
@@ -116,6 +116,8 @@ checkSepticPatient <- function(){
   #print(septic)
   return(septic)
 }
+print(checkSepticPatient())
+
 ### SepticObservation = 104964 (13.28%)
 checkSepticObservation <- function(){
   septic <- 0
@@ -127,6 +129,7 @@ checkSepticObservation <- function(){
   #print(septic)
   return(septic)
 }
+print(checkSepticObservation())
 
 ### SepticObservationPositive = 17136 (16.33%)
 checkSepticObservationPositive <- function(){
@@ -141,3 +144,4 @@ checkSepticObservationPositive <- function(){
   #print(septic)
   return(septic)
 }
+print(checkSepticObservationPositive())
