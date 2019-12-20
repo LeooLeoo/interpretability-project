@@ -1,0 +1,25 @@
+@font-face {
+  font-family: RobotoSlab;
+  src: url(RobotoSlab-Bold.ttf);
+}
+
+.main-header .logo {
+  font-family: "RobotoSlab";
+  font-weight: bold;
+  font-size: 28px;
+}
+
+h1 {
+  font-family: "RobotoSlab";
+  font-weight: bold;
+  color: purple;
+}
+
+h3 {
+  font-family: "Georgia";
+  text-decoration: underline;
+}
+
+p {
+  font-size: 18px;
+}
