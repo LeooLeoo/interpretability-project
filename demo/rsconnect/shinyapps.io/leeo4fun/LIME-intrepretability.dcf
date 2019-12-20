@@ -1,0 +1,13 @@
+name: LIME-intrepretability
+title: LIME-intrepretability
+username:
+account: leeo4fun
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 1614478
+bundleId: 2684521
+url: https://leeo4fun.shinyapps.io/LIME-intrepretability/
+when: 1576883198.8429
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: www/.DS_Store

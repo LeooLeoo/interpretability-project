@@ -5,12 +5,7 @@
 library(tree)
 library(ISLR)
 library(randomForest)
-library(e1071)
-library(caret)
 library(lime)
-library(dplyr)
-library(lattice)
-library(ggplot2)
 
 #the data is fixed here
 train <- read.csv(file="../../data/processed_data/deployed_data/final_model_train.csv") 

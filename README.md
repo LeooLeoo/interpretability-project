@@ -14,3 +14,6 @@ This is a project of current research and trend of health informatics from Karol
 - [x] machine learning model construction
 - [x] LIME codes implementation
 - [x] Interpretability evaluation
+
+## Our demo
+The demo is implemented with Rshiny, please find the link [here](https://leeo4fun.shinyapps.io/LIME-intrepretability/).

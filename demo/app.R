@@ -3,15 +3,11 @@ library(shinydashboard)
 library(tree)
 library(ISLR)
 library(randomForest)
-library(e1071)
-library(caret)
 library(lime)
-library(dplyr)
-library(lattice)
-library(ggplot2)
+
 
 #the data is fixed here
-train <- read.csv(file="../data/processed_data/deployed_data/final_model_train.csv")[,-1]
+train <- read.csv(file="www/final_model_train.csv")[,-1]
 #lapply(train,class)
 train$Gender <- as.factor(train$Gender)
 
@@ -43,7 +39,7 @@ ui <- dashboardPage(
               column(width = 10,
                      box(width = NULL, status = "danger",
                          HTML("<h1 style='text-align: center; color:red; font-weight: bold;'>LIME</h1>"),
-                         HTML("<img src='/lime.png' style='display: block; margin-left: auto; margin-right: auto; width: 80%;'/>"),
+                         HTML("<img src='lime.png' style='display: block; margin-left: auto; margin-right: auto; width: 80%;'/>"),
                          HTML("<p style='text-align: center; color:green; font-weight: bold; font-style: italic;'>Local Interpretable Model-agnostic Method</p>")
                      )
               ),
@@ -67,7 +63,7 @@ ui <- dashboardPage(
       tabItem(tabName = "prediction",
               fluidRow(
                 column(width = 7,
-                       h2("LIME explanation"),
+                       h2("LIME explanation for sepsis"),
                        box(width = NULL, status = "danger",
                            plotOutput('plot1'),
                            actionButton(inputId="button", label="Apply to input")
